@@ -114,6 +114,11 @@ public class anasayfa extends javax.swing.JFrame {
         btn_grupOlustur.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         btn_grupOlustur.setForeground(new java.awt.Color(255, 255, 255));
         btn_grupOlustur.setText("Grup Oluştur");
+        btn_grupOlustur.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_grupOlusturActionPerformed(evt);
+            }
+        });
         getContentPane().add(btn_grupOlustur);
         btn_grupOlustur.setBounds(0, 520, 160, 60);
 
@@ -147,6 +152,18 @@ public class anasayfa extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_btn_sohbetBaslatActionPerformed
+
+    private void btn_grupOlusturActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_grupOlusturActionPerformed
+        try {
+            // TODO add your handling code here:
+            ThisAnasayfa.setVisible(false);
+            Thread.sleep(300);
+            new grupOlustur(users).setVisible(true);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(anasayfa.class.getName()).log(Level.SEVERE, null, ex);
+        }
+   
+    }//GEN-LAST:event_btn_grupOlusturActionPerformed
 
     /**
      * @param args the command line arguments
@@ -195,6 +212,7 @@ public class anasayfa extends javax.swing.JFrame {
 
     public void getUser(DefaultListModel msg) {
        online_users.setModel(msg);
+  
     }
     
 

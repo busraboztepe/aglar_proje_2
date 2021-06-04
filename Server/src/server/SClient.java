@@ -117,10 +117,16 @@ public class SClient {
 
                             break;
 
+                          case  grupKisiBul:
+                              Server.CreateGrup(received);
+                              
+                              break;
+                          
+                            
                         case Text:
                             //gelen metni direkt rakibe gönder
                             //Server.Send(TheClient.rival, received);
-                            Server.AllSend(received);
+                            
                             break;
 
                         case icerik2:
@@ -140,6 +146,29 @@ public class SClient {
                             TheClient.paired = false;
                             TheClient.pairThread.stop();
                             break;
+                            
+                        case grupUsers:
+                            Server.Baglandi2(received);
+                            Thread.sleep(100);
+                            break;
+                            
+                            
+                        case icerikGrup:
+                            Server.tumUyelereGonder(received);
+                            
+                            break;
+                            
+                            
+                        case dosya1:
+                            
+                            System.out.println(received.content);
+                            System.out.println(received.content.toString());
+                            
+                            Server.dosyaGonder(received);
+                            
+                            break;
+                            
+                            
                     }
 
                 } catch (IOException ex) {

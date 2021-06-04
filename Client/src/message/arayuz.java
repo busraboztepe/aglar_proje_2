@@ -32,7 +32,7 @@ public class arayuz extends javax.swing.JFrame {
 //        reset = new Thread(() -> {
 //            while (Client.socket.isConnected()) {
 //                reset.stop();
-//                Reset();
+//                Reset();-
 //            }
 //        });
     }

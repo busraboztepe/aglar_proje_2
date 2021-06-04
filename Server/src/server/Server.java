@@ -56,8 +56,8 @@ public class Server {
     public static int port = 0;
     //Serverı sürekli dinlemede tutacak thread nesnesi
     public static ServerThread runThread;
-    
-     public static Semaphore pairTwo = new Semaphore(1, true);
+
+    public static Semaphore pairTwo = new Semaphore(1, true);
 
     public static ArrayList<SClient> Clients = new ArrayList<>();
 
@@ -89,19 +89,73 @@ public class Server {
         }
     }
 
-    public static void AllSend(Message msg) {
+    public static void CreateGrup(Message msg) {
+
+        String[] parts = msg.content.toString().split("_");
+        String grup_adi = parts[0];
+        String geri_kalan = parts[1];
+        System.out.println("Server ici grup_adi  :   " + grup_adi);
+
+        String[] parts2 = geri_kalan.split("-");
+
+        msg.content = grup_adi + "_" + geri_kalan;
+
         for (SClient c : Clients) {
-            Server.Send(c, msg);
+            for (String p : parts2) {
+                if (c.name.equals(p)) {
+                    Server.Send(c, msg);
+                }
+            }
         }
     }
 
-    public static SClient ClientBul(String s, String s2) {      
+    public static void tumUyelereGonder(Message msg) {
+
+        String[] parts = msg.content.toString().split("_");
+        String kisiler = parts[0];
+        String mesaj = parts[1];
+
+        msg.content = mesaj;
+
+        String[] parts2 = kisiler.split("-");
+
+        for (SClient c : Clients) {
+            for (String p : parts2) {
+                if (c.name.equals(p)) {
+                    Server.Send(c, msg);
+                }
+            }
+        }
+    }
+
+    public static void dosyaGonder(Message msg) throws InterruptedException {
+        System.out.println(msg.content.toString());
+        Thread.sleep(100);
+        String[] parts = msg.content.toString().split("&");
+        String kisiler = parts[0];
+        String fileName_Content = parts[1];
+        
+
+        msg.content = fileName_Content;
+
+        String[] parts2 = kisiler.split("-");
+
+        for (SClient c : Clients) {
+            for (String p : parts2) {
+                if (c.name.equals(p)) {
+                    Server.Send(c, msg);
+                }
+            }
+        }
+    }
+
+    public static SClient ClientBul(String s, String s2) {
         Message msg2 = new Message(Message.Message_Type.icerik);
         msg2.content = s2;
-        
+
         for (SClient c : Clients) {
-            if(c.name.equals(s)){
-               //Server.Send(c, msg2);
+            if (c.name.equals(s)) {
+                //Server.Send(c, msg2);
                 return c;
             }
         }
@@ -126,6 +180,31 @@ public class Server {
             for (SClient c : Clients) {
                 Server.Send(c, msg2);
             }
+        }
+    }
+
+    public static void Baglandi2(Message msg) throws InterruptedException {
+
+        Thread.sleep(500);
+        if (Server.Clients.size() > 0) {
+
+            DefaultListModel userList = new DefaultListModel();
+
+            for (SClient client : Clients) {
+                userList.addElement(client.name);
+
+            }
+
+            Message msg2 = new Message(Message.Message_Type.grupUsers);
+            msg2.content = userList;
+
+            for (SClient c : Clients) {
+                if (c.name.equals(msg.content.toString())) {
+                    Server.Send(c, msg2);
+                    break;
+                }
+            }
+
         }
     }
 }

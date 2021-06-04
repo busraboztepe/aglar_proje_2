@@ -20,10 +20,15 @@ import message.Message;
 import message.arayuz;
 import java.awt.Color;
 import java.awt.Image;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Base64;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import message.anasayfa;
+import message.grupOlustur;
 import message.sohbet;
 import static message.sohbet.ThisSohbet;
 import static message.sohbet.durum;
@@ -50,6 +55,8 @@ class Listen extends Thread {
                         //anasayfa.ThisAnasayfa.users.addElement(received.content.toString());
                         //anasayfa.ThisAnasayfa.online_users.setModel(anasayfa.ThisAnasayfa.users);
                         anasayfa.ThisAnasayfa.getUser((DefaultListModel) received.content);
+                        Thread.sleep(300);
+
                         break;
 
                     //rakip ile bağlantı bilgileri gelir 
@@ -119,20 +126,59 @@ class Listen extends Thread {
                         }
                         break;
 
-                }
+                    case grupUsers:
+                        Thread.sleep(100);
+                        grupOlustur.ThisGrupOlustur.getUser((DefaultListModel) received.content);
+                        break;
 
+                    case grupKisiBul:
+
+                        if (message.anasayfa.ThisAnasayfa.isVisible()) {
+                            message.anasayfa.ThisAnasayfa.setVisible(false);
+                        }
+                        new message.GrupSohbet(received.content.toString(), 1).setVisible(true);
+                        break;
+
+                    case icerikGrup:
+                        message.GrupSohbet.ThisGrupSohbet.grup_mesaj_akisi.setText(received.content.toString());
+
+                        break;
+
+                    case dosya1:
+                        String[] parts4 = received.content.toString().split("_");
+                        String fileName = parts4[0];
+                        String Content = parts4[1];
+                        System.out.println("fileName : " + fileName);
+                        System.out.println("content : " + Content);
+                        
+                        byte[] content_decode = Base64.getDecoder().decode(Content);
+                        
+                        System.out.println("byte array" + content_decode);
+
+                        JFileChooser ch = new JFileChooser();
+                        ch.setCurrentDirectory(new File("C:\\Users\\busra\\Desktop\\ağlar_proje_2\\dosya_alma"));
+                        int c = ch.showSaveDialog(null);
+                        if (c == JFileChooser.APPROVE_OPTION) {
+                            FileOutputStream out = new FileOutputStream(ch.getSelectedFile());
+                            out.write(content_decode);
+                            out.close();
+                        }
+
+                        break;
+
+                }
             } catch (IOException ex) {
 
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 //Client.Stop();
-                break;
+
+            } //Client.Stop();
+            catch (InterruptedException ex) {
+                Logger.getLogger(Listen.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                //Client.Stop();
-                break;
-            } catch (InterruptedException ex) {
                 Logger.getLogger(Listen.class.getName()).log(Level.SEVERE, null, ex);
             }
+
         }
 
     }
