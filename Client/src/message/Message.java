@@ -11,11 +11,13 @@ package message;
  */
 public class Message implements java.io.Serializable {
 
+    //mesaj tipleri enum 
     public static enum Message_Type {
-        Name, RivalConnected, Text,newUser , kisiBul,icerik,eslestir,icerik2,durum,baglantiKopar,baglantiKopar2,grupUsers,grupKisiBul,icerikGrup,dosya1,dosya2
+        Name, Connected, kisiBul, icerik, icerik2, durum, baglantiKopar, baglantiKopar2, grupUsers, grupKisiBul, icerikGrup, dosya1, dosya2
     }
-
+    //mesajın tipi
     public Message_Type type;
+    //mesajın içeriği obje tipinde bunun nedeni istenilen tip içerik yüklenebilsin
     public Object content;
 
     public Message(Message_Type t) {

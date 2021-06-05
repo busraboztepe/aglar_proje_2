@@ -19,26 +19,14 @@ public class arayuz extends javax.swing.JFrame {
     /**
      * Creates new form arayuz
      */
-    //framedeki komponentlere erişim için statik oyun değişkeni
-    public static arayuz ThisGame;
-    //oyun bittikten sonra resetleyip tekrar baglanmak icin kullanilacak
-    public Thread reset;
+    //framedeki komponentlere erişim için statik sayfa değişkeni
+    public static arayuz ThisArayuz;
 
     public arayuz() {
         initComponents();
-        ThisGame = this;
-        ThisGame.setPreferredSize(new Dimension(450, 640));
-        //Oyun sonlandiginda yani 6 tas disari atildiginda oyunu resetlemek icin 
-//        reset = new Thread(() -> {
-//            while (Client.socket.isConnected()) {
-//                reset.stop();
-//                Reset();-
-//            }
-//        });
+        ThisArayuz = this;
+        ThisArayuz.setPreferredSize(new Dimension(450, 640));
     }
-    
-    
-   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -60,8 +48,10 @@ public class arayuz extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(450, 640));
         getContentPane().setLayout(null);
 
+        txt_name.setFont(new java.awt.Font("Constantia", 1, 14)); // NOI18N
         txt_name.setForeground(new java.awt.Color(102, 102, 102));
-        txt_name.setText("                       İsim giriniz");
+        txt_name.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_name.setText("İsim giriniz");
         txt_name.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_nameActionPerformed(evt);
@@ -70,17 +60,17 @@ public class arayuz extends javax.swing.JFrame {
         getContentPane().add(txt_name);
         txt_name.setBounds(80, 280, 250, 40);
 
-        btn_connect.setBackground(new java.awt.Color(0, 51, 153));
+        btn_connect.setBackground(new java.awt.Color(255, 255, 255));
         btn_connect.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         btn_connect.setForeground(new java.awt.Color(255, 255, 255));
-        btn_connect.setText("İleri");
+        btn_connect.setIcon(new javax.swing.ImageIcon(getClass().getResource("/message/next.png"))); // NOI18N
         btn_connect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_connectActionPerformed(evt);
             }
         });
         getContentPane().add(btn_connect);
-        btn_connect.setBounds(150, 340, 119, 25);
+        btn_connect.setBounds(150, 340, 119, 73);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 51, 153));
@@ -101,17 +91,15 @@ public class arayuz extends javax.swing.JFrame {
 
     private void btn_connectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_connectActionPerformed
         // TODO add your handling code here:
-
         try {
             //bağlanılacak server ve portu veriyoruz
             Client.Start("127.0.0.1", 7000);
-            //başlangıç durumları
-            ThisGame.setVisible(false);
+            //arayuzu kapatip anasayfaya baglaniyoruz
+            ThisArayuz.dispose();
             new anasayfa(txt_name.getText().toString()).setVisible(true);
         } catch (Exception e) {
             System.out.println("Sisteme bağlanılamadı.");
         }
-
     }//GEN-LAST:event_btn_connectActionPerformed
 
     private void txt_nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_nameActionPerformed

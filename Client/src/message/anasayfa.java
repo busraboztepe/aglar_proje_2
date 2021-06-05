@@ -21,41 +21,24 @@ public class anasayfa extends javax.swing.JFrame {
      */
     //framedeki komponentlere erişim için statik oyun değişkeni
     public static anasayfa ThisAnasayfa;
+    //cevrimici kullanicilari tutmak icin
     public DefaultListModel users;
-    public DefaultListModel grup;
 
     public anasayfa() {
         initComponents();
-
         ThisAnasayfa = this;
         ThisAnasayfa.setPreferredSize(new Dimension(450, 640));
-       
-        //users2.addElement(online_users.getSelectedValue());
         users = new DefaultListModel();
         online_users.setModel(users);
-        
-        grup = new DefaultListModel();
-        
     }
-    
-    
-        public anasayfa(String s) {
-        initComponents();
 
+    public anasayfa(String s) {
+        initComponents();
         ThisAnasayfa = this;
         ThisAnasayfa.setPreferredSize(new Dimension(450, 640));
         ThisAnasayfa.lbl_hesapadi2.setText(s);
-        //users2.addElement(online_users.getSelectedValue());
         users = new DefaultListModel();
         online_users.setModel(users);
-        
-        grup = new DefaultListModel();
-        
-    }
-
-    public void onlineOlanlar(String s) {
-        //users.addElement(s);
-        //online_users.setModel(users);
     }
 
     /**
@@ -76,22 +59,24 @@ public class anasayfa extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(450, 640));
         setMinimumSize(new java.awt.Dimension(450, 640));
         setPreferredSize(new java.awt.Dimension(450, 640));
         getContentPane().setLayout(null);
 
-        online_users.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        online_users.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 102, 255)));
+        online_users.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         online_users.setForeground(new java.awt.Color(0, 51, 153));
-        online_users.setOpaque(false);
         jScrollPane1.setViewportView(online_users);
 
         getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(0, 110, 430, 400);
+        jScrollPane1.setBounds(0, 90, 430, 430);
 
         btn_sohbetBaslat.setBackground(new java.awt.Color(0, 51, 153));
         btn_sohbetBaslat.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         btn_sohbetBaslat.setForeground(new java.awt.Color(255, 255, 255));
+        btn_sohbetBaslat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/message/user.png"))); // NOI18N
         btn_sohbetBaslat.setText("Sohbeti Başlat ");
         btn_sohbetBaslat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,7 +84,7 @@ public class anasayfa extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btn_sohbetBaslat);
-        btn_sohbetBaslat.setBounds(270, 520, 160, 60);
+        btn_sohbetBaslat.setBounds(210, 520, 220, 70);
 
         lbl_hesapadi2.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
         lbl_hesapadi2.setForeground(new java.awt.Color(255, 255, 255));
@@ -113,56 +98,50 @@ public class anasayfa extends javax.swing.JFrame {
         btn_grupOlustur.setBackground(new java.awt.Color(0, 51, 153));
         btn_grupOlustur.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         btn_grupOlustur.setForeground(new java.awt.Color(255, 255, 255));
-        btn_grupOlustur.setText("Grup Oluştur");
+        btn_grupOlustur.setIcon(new javax.swing.ImageIcon(getClass().getResource("/message/grup.png"))); // NOI18N
+        btn_grupOlustur.setText(" Grup Oluştur");
         btn_grupOlustur.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_grupOlusturActionPerformed(evt);
             }
         });
         getContentPane().add(btn_grupOlustur);
-        btn_grupOlustur.setBounds(0, 520, 160, 60);
+        btn_grupOlustur.setBounds(0, 520, 210, 70);
 
-        jLabel1.setBackground(new java.awt.Color(0, 51, 153));
+        jLabel1.setBackground(new java.awt.Color(0, 102, 255));
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("     Çevrimiçi Kullanıcılar ");
         jLabel1.setOpaque(true);
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(0, 0, 430, 110);
+        jLabel1.setBounds(0, 0, 430, 90);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_sohbetBaslatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_sohbetBaslatActionPerformed
         // TODO add your handling code here:
-        
-       
-        //sohbet.ThisSohbet.kisi = new DefaultListModel();
-        System.out.println(online_users.getSelectedValue().toString());
+        //secili kisi ile bireysel mesajlasma frame'ini olusturur
         String kisi = online_users.getSelectedValue().toString();
-        //sohbet.ThisSohbet.kisi.addElement(online_users.getSelectedValue().toString());
         ThisAnasayfa.setVisible(false);
-    
         try {
-            Thread.sleep(500);
-           
+            Thread.sleep(300);
             new sohbet(kisi).setVisible(true);
         } catch (InterruptedException ex) {
             Logger.getLogger(anasayfa.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
     }//GEN-LAST:event_btn_sohbetBaslatActionPerformed
 
     private void btn_grupOlusturActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_grupOlusturActionPerformed
+        //Secili kisiler ile grup mesajlasmasi icin frame olusturur
         try {
-            // TODO add your handling code here:
             ThisAnasayfa.setVisible(false);
             Thread.sleep(300);
             new grupOlustur(users).setVisible(true);
         } catch (InterruptedException ex) {
             Logger.getLogger(anasayfa.class.getName()).log(Level.SEVERE, null, ex);
         }
-   
     }//GEN-LAST:event_btn_grupOlusturActionPerformed
 
     /**
@@ -209,11 +188,5 @@ public class anasayfa extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_hesapadi2;
     public javax.swing.JList<String> online_users;
     // End of variables declaration//GEN-END:variables
-
-    public void getUser(DefaultListModel msg) {
-       online_users.setModel(msg);
-  
-    }
-    
 
 }

@@ -6,7 +6,6 @@
 package message;
 
 import java.awt.Dimension;
-import java.awt.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -28,7 +27,6 @@ public class grupOlustur extends javax.swing.JFrame {
         initComponents();
         ThisGrupOlustur = this;
         ThisGrupOlustur.setPreferredSize(new Dimension(450, 640));
-
         grup = new DefaultListModel();
         this.users.setModel(grup);
     }
@@ -37,7 +35,6 @@ public class grupOlustur extends javax.swing.JFrame {
         initComponents();
         ThisGrupOlustur = this;
         ThisGrupOlustur.setPreferredSize(new Dimension(450, 640));
-
         grup = new DefaultListModel();
         this.users.setModel(grup);
         try {
@@ -46,9 +43,8 @@ public class grupOlustur extends javax.swing.JFrame {
             Logger.getLogger(grupOlustur.class.getName()).log(Level.SEVERE, null, ex);
         }
         Message msg = new Message(Message.Message_Type.grupUsers);
-        msg.content = arayuz.ThisGame.txt_name.getText().toString();
+        msg.content = arayuz.ThisArayuz.txt_name.getText().toString();
         client.Client.Send(msg);
-
     }
 
     /**
@@ -72,20 +68,28 @@ public class grupOlustur extends javax.swing.JFrame {
         setMaximumSize(new java.awt.Dimension(450, 640));
         setMinimumSize(new java.awt.Dimension(450, 640));
         getContentPane().setLayout(null);
+
+        grup_adi.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
         getContentPane().add(grup_adi);
         grup_adi.setBounds(180, 50, 210, 40);
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Grup Adı Giriniz : ");
         getContentPane().add(jLabel2);
-        jLabel2.setBounds(20, 50, 120, 40);
+        jLabel2.setBounds(50, 50, 120, 40);
 
-        jLabel1.setBackground(new java.awt.Color(0, 51, 204));
+        jLabel1.setBackground(new java.awt.Color(0, 153, 255));
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setOpaque(true);
         getContentPane().add(jLabel1);
         jLabel1.setBounds(0, 0, 450, 109);
 
+        btn_grupOlustur.setBackground(new java.awt.Color(0, 51, 153));
+        btn_grupOlustur.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        btn_grupOlustur.setForeground(new java.awt.Color(255, 255, 255));
+        btn_grupOlustur.setIcon(new javax.swing.ImageIcon(getClass().getResource("/message/next.png"))); // NOI18N
         btn_grupOlustur.setText("Grup Oluştur");
         btn_grupOlustur.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -93,13 +97,19 @@ public class grupOlustur extends javax.swing.JFrame {
             }
         });
         getContentPane().add(btn_grupOlustur);
-        btn_grupOlustur.setBounds(290, 510, 110, 70);
+        btn_grupOlustur.setBounds(220, 500, 220, 90);
 
+        users.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 153, 255)));
+        users.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jScrollPane1.setViewportView(users);
 
         getContentPane().add(jScrollPane1);
-        jScrollPane1.setBounds(10, 120, 410, 380);
+        jScrollPane1.setBounds(0, 110, 440, 390);
 
+        jButton1.setBackground(new java.awt.Color(0, 51, 204));
+        jButton1.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/message/back.png"))); // NOI18N
         jButton1.setText("Anasayfaya Dön");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -107,29 +117,26 @@ public class grupOlustur extends javax.swing.JFrame {
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(20, 520, 140, 60);
+        jButton1.setBounds(0, 500, 220, 90);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_grupOlusturActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_grupOlusturActionPerformed
         // TODO add your handling code here:
+        //Listeden secili kisileri alir ve bu bilgiyi servera gonderir 
+        //bu pencereyi kapatip grup sohbet penceresini baslatir
         String txt = ThisGrupOlustur.grup_adi.getText().toString() + "_";
         if (users.getSelectedIndex() != -1) {
             for (Object item : users.getSelectedValuesList()) {
                 txt += item + "-";
             }
         }
-
-        System.out.println(txt);
         ThisGrupOlustur.setVisible(false);
 
         try {
             Thread.sleep(500);
-
-           GrupSohbet d = new GrupSohbet(txt);
-          
-            
+            GrupSohbet d = new GrupSohbet(txt);
         } catch (InterruptedException ex) {
             Logger.getLogger(anasayfa.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -137,18 +144,14 @@ public class grupOlustur extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        
-        
-        
+        //bu pencereyi kapatip anasayfaya geri doner
         ThisGrupOlustur.dispose();
         anasayfa.ThisAnasayfa.setVisible(true);
-        
         try {
             Thread.sleep(200);
         } catch (InterruptedException ex) {
             Logger.getLogger(sohbet.class.getName()).log(Level.SEVERE, null, ex);
         }
-      
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -184,12 +187,6 @@ public class grupOlustur extends javax.swing.JFrame {
                 new grupOlustur().setVisible(true);
             }
         });
-    }
-
-    public void getUser(DefaultListModel msg) throws InterruptedException {
-        Thread.sleep(100);
-        users.setModel(msg);
-
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -6,25 +6,17 @@
 package message;
 
 import java.awt.Dimension;
-import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import static java.time.Clock.offset;
 import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.chart.PieChart.Data;
-import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Document;
-import javax.swing.text.Position;
 
 /**
  *
@@ -42,17 +34,12 @@ public class GrupSohbet extends javax.swing.JFrame {
     public static String grup_adi;
     public static String kisiler;
     public static File fileToSend = null;
-    DefaultStyledDocument document;
-    public static String genel = null;
-
-    public static int position = -1;
 
     public GrupSohbet() {
         initComponents();
         ThisGrupSohbet = this;
         ThisGrupSohbet.setPreferredSize(new Dimension(450, 640));
         durum = false;
-        document = (DefaultStyledDocument) grup_mesaj_akisi.getDocument();
         grup_mesaj_akisi.setEditable(true);
     }
 
@@ -61,11 +48,8 @@ public class GrupSohbet extends javax.swing.JFrame {
         ThisGrupSohbet = this;
         ThisGrupSohbet.setPreferredSize(new Dimension(450, 640));
         durum = false;
-        document = (DefaultStyledDocument) grup_mesaj_akisi.getDocument();
         grup_mesaj_akisi.setEditable(true);
-
         Thread.sleep(500);
-        System.out.println(s);
 
         String[] parts = s.split("_");
         grup_adi = parts[0];
@@ -77,7 +61,6 @@ public class GrupSohbet extends javax.swing.JFrame {
         msg.content = grup_adi + "_" + kisiler;
         Thread.sleep(100);
         client.Client.Send(msg);
-
     }
 
     public GrupSohbet(String s, int i) throws InterruptedException {
@@ -85,20 +68,14 @@ public class GrupSohbet extends javax.swing.JFrame {
         ThisGrupSohbet = this;
         ThisGrupSohbet.setPreferredSize(new Dimension(450, 640));
         durum = false;
-        document = (DefaultStyledDocument) grup_mesaj_akisi.getDocument();
         grup_mesaj_akisi.setEditable(true);
-
         Thread.sleep(500);
-        System.out.println(s);
 
         String[] parts3 = s.split("_");
         grup_adi = parts3[0];
         kisiler = parts3[1];
-
         ThisGrupSohbet.grup_adi_.setText(grup_adi);
-
         Thread.sleep(100);
-
     }
 
     /**
@@ -122,89 +99,83 @@ public class GrupSohbet extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(450, 640));
         getContentPane().setLayout(null);
 
-        jButton1.setText("Geri");
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/message/back.png"))); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
         getContentPane().add(jButton1);
-        jButton1.setBounds(0, 0, 110, 110);
+        jButton1.setBounds(0, 0, 80, 80);
 
-        grup_adi_.setBackground(new java.awt.Color(0, 51, 255));
+        grup_adi_.setBackground(new java.awt.Color(0, 102, 255));
+        grup_adi_.setFont(new java.awt.Font("Comic Sans MS", 3, 18)); // NOI18N
         grup_adi_.setForeground(new java.awt.Color(255, 255, 255));
         grup_adi_.setOpaque(true);
         getContentPane().add(grup_adi_);
-        grup_adi_.setBounds(110, 0, 310, 110);
-        getContentPane().add(grup_mesaj_kutusu);
-        grup_mesaj_kutusu.setBounds(10, 500, 260, 70);
+        grup_adi_.setBounds(80, 0, 360, 80);
 
-        btn_mesaj_gonder_grup.setText("Yolla");
+        grup_mesaj_kutusu.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        grup_mesaj_kutusu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 153, 255)));
+        getContentPane().add(grup_mesaj_kutusu);
+        grup_mesaj_kutusu.setBounds(50, 500, 320, 80);
+
+        btn_mesaj_gonder_grup.setIcon(new javax.swing.ImageIcon(getClass().getResource("/message/send.png"))); // NOI18N
         btn_mesaj_gonder_grup.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_mesaj_gonder_grupActionPerformed(evt);
             }
         });
         getContentPane().add(btn_mesaj_gonder_grup);
-        btn_mesaj_gonder_grup.setBounds(350, 500, 70, 70);
+        btn_mesaj_gonder_grup.setBounds(370, 500, 60, 80);
 
-        dosya.setText("Dosya");
+        dosya.setIcon(new javax.swing.ImageIcon(getClass().getResource("/message/file.png"))); // NOI18N
         dosya.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 dosyaActionPerformed(evt);
             }
         });
         getContentPane().add(dosya);
-        dosya.setBounds(270, 500, 70, 70);
+        dosya.setBounds(0, 500, 50, 80);
 
+        grup_mesaj_akisi.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 102, 255)));
+        grup_mesaj_akisi.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
         jScrollPane2.setViewportView(grup_mesaj_akisi);
 
         getContentPane().add(jScrollPane2);
-        jScrollPane2.setBounds(10, 120, 400, 370);
+        jScrollPane2.setBounds(0, 80, 430, 420);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_mesaj_gonder_grupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_mesaj_gonder_grupActionPerformed
         // TODO add your handling code here:
+        //eger dosya gonderme durumu yoksa clientin yazdigi mesaji mesaj akisina ekler 
+        //tum mesaj akisini karsi clientlara gonderir
         if (fileToSend == null) {
-            
             String ad = client.Client.client_name;
             String n_ad = ad.toUpperCase();
             String icerik = n_ad + ":\n" + grup_mesaj_kutusu.getText().toString() + "\n";
-
-            try {
-                document.insertString(document.getLength(), icerik, null);
-            } catch (BadLocationException ex) {
-                Logger.getLogger(GrupSohbet.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            //grup_mesaj_akisi.setText(grup_mesaj_akisi.getText() + icerik);
+            grup_mesaj_akisi.setText(grup_mesaj_akisi.getText() + icerik);
             grup_mesaj_kutusu.setText("");
 
             Message msg = new Message(Message.Message_Type.icerikGrup);
             msg.content = kisiler + "_" + grup_mesaj_akisi.getText();
-
             try {
                 Thread.sleep(300);
             } catch (InterruptedException ex) {
                 Logger.getLogger(GrupSohbet.class.getName()).log(Level.SEVERE, null, ex);
             }
-
             client.Client.Send(msg);
-
+            //dosya gonderme durumu varsa
         } else if (fileToSend != null) {
             try {
+                //dosya gonderildi bilgisini mesaj akisina ekler dosya adiyla
+                //dosyayi karsiya gonderir
                 String ad = client.Client.client_name;
                 String n_ad = ad.toUpperCase();
-
                 String icerik = n_ad + ":\n" + "--- Dosya : " + fileToSend.getName() + " ---\n" + grup_mesaj_kutusu.getText().toString() + "\n";
-                try {
-                    document.insertString(document.getLength(), icerik, null);
-                } catch (BadLocationException ex) {
-                    Logger.getLogger(GrupSohbet.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                //grup_mesaj_akisi.setText(grup_mesaj_akisi.getText() + icerik);
+                grup_mesaj_akisi.setText(grup_mesaj_akisi.getText() + icerik);
                 grup_mesaj_kutusu.setText("");
 
                 Message msg = new Message(Message.Message_Type.icerikGrup);
@@ -215,70 +186,53 @@ public class GrupSohbet extends javax.swing.JFrame {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(GrupSohbet.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
                 client.Client.Send(msg);
 
                 FileInputStream fileInputStream = new FileInputStream(fileToSend);
                 String fileName = fileToSend.getName();
-                //byte[] fileNameBytes = fileName.getBytes();
-
                 byte[] fileContentBytes = new byte[fileInputStream.available()];
                 fileInputStream.read(fileContentBytes);
-
                 fileInputStream.close();
                 fileToSend = null;
-     
+
                 String fileContentBytes_string = Base64.getEncoder().encodeToString(fileContentBytes);
                 Message msg4 = new Message(Message.Message_Type.dosya1);
                 msg4.content = kisiler + "&" + fileName + "_" + fileContentBytes_string;
                 client.Client.Send(msg4);
                 Thread.sleep(300);
-
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(GrupSohbet.class.getName()).log(Level.SEVERE, null, ex);
-
             } catch (IOException ex) {
                 Logger.getLogger(GrupSohbet.class.getName()).log(Level.SEVERE, null, ex);
             } catch (InterruptedException ex) {
                 Logger.getLogger(GrupSohbet.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
-
-
     }//GEN-LAST:event_btn_mesaj_gonder_grupActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-
+        //client geri cikarsa sohbetten sohbet penceresi kapanir
         ThisGrupSohbet.dispose();
         message.anasayfa.ThisAnasayfa.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void dosyaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dosyaActionPerformed
         // TODO add your handling code here:
-
+        //dosya cubugunu acar ve gondermek istenilen dosyayi secmeye yarar
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Dosya seç");
         fileChooser.setCurrentDirectory(new File("C:\\Users\\busra\\Desktop\\ağlar_proje_2\\dosya_gonderme"));
-        int response = fileChooser.showOpenDialog(this);
-        //int response = fileChooser.showSaveDialog(null);
+        int secim = fileChooser.showOpenDialog(this);
 
-        if (response == JFileChooser.APPROVE_OPTION) {
+        if (secim == JFileChooser.APPROVE_OPTION) {
             fileToSend = fileChooser.getSelectedFile();
-            System.out.println("The file you want to send is : " + fileToSend.getName());
-
-            System.out.println(fileToSend);
-
             try {
                 Thread.sleep(300);
             } catch (InterruptedException ex) {
                 Logger.getLogger(GrupSohbet.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
-
-
     }//GEN-LAST:event_dosyaActionPerformed
 
     /**

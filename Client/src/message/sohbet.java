@@ -6,11 +6,10 @@
 package message;
 
 import java.awt.Dimension;
-import java.awt.Font;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
-import static javax.swing.text.StyleConstants.FontFamily;
 
 /**
  *
@@ -30,7 +29,6 @@ public class sohbet extends javax.swing.JFrame {
         ThisSohbet = this;
         ThisSohbet.setPreferredSize(new Dimension(450, 640));
         durum = false;
-        //mesajlasilan_kisi.setText(kisi.toString());
     }
 
     public sohbet(String s) throws InterruptedException {
@@ -38,11 +36,23 @@ public class sohbet extends javax.swing.JFrame {
         ThisSohbet = this;
         ThisSohbet.setPreferredSize(new Dimension(450, 640));
         durum = false;
-        Thread.sleep(500);
-        System.out.println(s);
+        Thread.sleep(300);
         String kisi = s;
         mesajlasilan_kisi.setText(kisi.toString());
+    }
 
+    public sohbet(String s, int i) throws InterruptedException {
+        initComponents();
+        ThisSohbet = this;
+        ThisSohbet.setPreferredSize(new Dimension(450, 640));
+        durum = true;
+        Thread.sleep(500);
+        String[] parts3 = s.split("_");
+        String mesajlasilan_adi = parts3[0];
+        String icerik = parts3[1];
+        ThisSohbet.mesajlasilan_kisi.setText(mesajlasilan_adi);
+        ThisSohbet.mesaj_akisi.setText(icerik);
+        Thread.sleep(100);
     }
 
     /**
@@ -66,18 +76,28 @@ public class sohbet extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(450, 640));
         setResizable(false);
 
-        mesajlasilan_kisi.setBackground(new java.awt.Color(0, 51, 204));
+        mesajlasilan_kisi.setBackground(new java.awt.Color(0, 102, 255));
+        mesajlasilan_kisi.setFont(new java.awt.Font("Comic Sans MS", 3, 18)); // NOI18N
         mesajlasilan_kisi.setForeground(new java.awt.Color(255, 255, 255));
+        mesajlasilan_kisi.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         mesajlasilan_kisi.setOpaque(true);
 
-        jButton1.setText("Yolla");
+        yollanan_txt.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 102, 255)));
+
+        jButton1.setBackground(new java.awt.Color(255, 255, 255));
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/message/send.png"))); // NOI18N
+        jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 102, 255)));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Geri");
+        jButton2.setBackground(new java.awt.Color(255, 255, 255));
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/message/back.png"))); // NOI18N
+        jButton2.setBorder(null);
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -85,39 +105,38 @@ public class sohbet extends javax.swing.JFrame {
         });
 
         mesaj_akisi.setColumns(20);
+        mesaj_akisi.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+        mesaj_akisi.setLineWrap(true);
         mesaj_akisi.setRows(5);
+        mesaj_akisi.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 102, 255)));
         jScrollPane1.setViewportView(mesaj_akisi);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mesajlasilan_kisi, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jScrollPane1)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(yollanan_txt, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
-                .addContainerGap())
+                .addComponent(yollanan_txt, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(mesajlasilan_kisi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mesajlasilan_kisi, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+                    .addComponent(mesajlasilan_kisi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(yollanan_txt)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 460, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+                    .addComponent(yollanan_txt, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
 
@@ -126,8 +145,8 @@ public class sohbet extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-
-        ThisSohbet.setVisible(false);
+        //anasayfaya geri donmek icin kullanilir.
+        ThisSohbet.dispose();
         anasayfa.ThisAnasayfa.setVisible(true);
         durum = false;
         try {
@@ -136,15 +155,13 @@ public class sohbet extends javax.swing.JFrame {
             Logger.getLogger(sohbet.class.getName()).log(Level.SEVERE, null, ex);
         }
         Message msg = new Message(Message.Message_Type.baglantiKopar);
-        msg.content = "baglanti kopar";
+        msg.content = mesajlasilan_kisi.getText().toString();
         client.Client.Send(msg);
-        
-        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here
-
+        //text kutusuna yazilan mesaji genel mesaj akisina iletir ve karsi clienta gonderir
         if (durum == false) {
             String ad = client.Client.client_name;
             String n_ad = ad.toUpperCase();
@@ -159,17 +176,16 @@ public class sohbet extends javax.swing.JFrame {
             } catch (InterruptedException ex) {
                 Logger.getLogger(sohbet.class.getName()).log(Level.SEVERE, null, ex);
             }
+            durum = true;
             client.Client.Send(msg);
         } else {
             String ad = client.Client.client_name;
-            ad.toUpperCase();
-            String icerik = ad + ":\n" + yollanan_txt.getText().toString() + "\n";
+            String n_ad = ad.toUpperCase();
+            String icerik = n_ad + ":\n" + yollanan_txt.getText().toString() + "\n";
             mesaj_akisi.setText(mesaj_akisi.getText() + icerik);
             yollanan_txt.setText("");
-
             Message msg = new Message(Message.Message_Type.icerik2);
-            msg.content = mesajlasilan_kisi.getText().toString() + "-" + client.Client.client_name + "_" + mesaj_akisi.getText();
-
+            msg.content = mesajlasilan_kisi.getText().toString() + "_" + mesaj_akisi.getText();
             try {
                 Thread.sleep(300);
             } catch (InterruptedException ex) {
@@ -177,7 +193,6 @@ public class sohbet extends javax.swing.JFrame {
             }
             client.Client.Send(msg);
         }
-
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

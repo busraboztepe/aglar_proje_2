@@ -13,7 +13,7 @@ public class Message implements java.io.Serializable {
 
     //mesaj tipleri enum 
     public static enum Message_Type {
-        Name, Connected, Text, newUser , kisiBul,icerik,icerik2,durum, baglantiKopar,baglantiKopar2,grupUsers,grupKisiBul,icerikGrup,dosya1 , dosya2
+        Name, Connected, kisiBul, icerik, icerik2, durum, baglantiKopar, baglantiKopar2, grupUsers, grupKisiBul, icerikGrup, dosya1, dosya2
     }
     //mesajın tipi
     public Message_Type type;

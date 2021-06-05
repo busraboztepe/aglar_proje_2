@@ -57,8 +57,6 @@ public class Server {
     //Serverı sürekli dinlemede tutacak thread nesnesi
     public static ServerThread runThread;
 
-    public static Semaphore pairTwo = new Semaphore(1, true);
-
     public static ArrayList<SClient> Clients = new ArrayList<>();
 
     // başlaşmak için sadece port numarası veriyoruz
@@ -89,17 +87,15 @@ public class Server {
         }
     }
 
+    //Yeni Grup olusturmak icin
     public static void CreateGrup(Message msg) {
-
         String[] parts = msg.content.toString().split("_");
         String grup_adi = parts[0];
         String geri_kalan = parts[1];
-        System.out.println("Server ici grup_adi  :   " + grup_adi);
-
         String[] parts2 = geri_kalan.split("-");
-
         msg.content = grup_adi + "_" + geri_kalan;
 
+        //secili kisilere grup olusturma mesajini yollar
         for (SClient c : Clients) {
             for (String p : parts2) {
                 if (c.name.equals(p)) {
@@ -109,16 +105,45 @@ public class Server {
         }
     }
 
-    public static void tumUyelereGonder(Message msg) {
+    //Yeni bireysel mesajlasma olusturmak icin
+    public static void CreateBireyselMesajlasma(Message msg) throws InterruptedException {
+        String[] parts = msg.content.toString().split("-");
+        String kisi_adi = parts[0];
+        String geri_kalan = parts[1];
+        msg.content = geri_kalan;
 
+        //secili kisiye yeni jframe olusturmak icin
+        for (SClient c : Clients) {
+            if (c.name.equals(kisi_adi)) {
+                Server.Send(c, msg);
+                Thread.sleep(100);
+            }
+        }
+    }
+
+    //Bireysel mesajlasmalarda yazilan mesaji karsiya gonderir
+    public static void KarsiyaGonder(Message msg) {
+        String[] parts = msg.content.toString().split("_");
+        String kisi = parts[0];
+        String mesaj = parts[1];
+        msg.content = kisi + "_" + mesaj;
+
+        //karsiki clienta mesaj icerigini gondermek icin 
+        for (SClient c : Clients) {
+            if (c.name.equals(kisi)) {
+                Server.Send(c, msg);
+            }
+        }
+    }
+
+    //Grup mesajlasmalarinda grupta yazilan mesajlari tum kullanicilara gonderir
+    public static void tumUyelereGonder(Message msg) {
         String[] parts = msg.content.toString().split("_");
         String kisiler = parts[0];
         String mesaj = parts[1];
-
         msg.content = mesaj;
-
         String[] parts2 = kisiler.split("-");
-
+        //tum grup uyelerine mesaj icerigini gonderir
         for (SClient c : Clients) {
             for (String p : parts2) {
                 if (c.name.equals(p)) {
@@ -129,15 +154,12 @@ public class Server {
     }
 
     public static void dosyaGonder(Message msg) throws InterruptedException {
-        System.out.println(msg.content.toString());
+        //Tum grup uyelerine dosyayi gonderir
         Thread.sleep(100);
         String[] parts = msg.content.toString().split("&");
         String kisiler = parts[0];
         String fileName_Content = parts[1];
-        
-
         msg.content = fileName_Content;
-
         String[] parts2 = kisiler.split("-");
 
         for (SClient c : Clients) {
@@ -149,9 +171,22 @@ public class Server {
         }
     }
 
-    public static SClient ClientBul(String s, String s2) {
-        Message msg2 = new Message(Message.Message_Type.icerik);
-        msg2.content = s2;
+    public static void dosyaGonder2(Message msg) throws InterruptedException {
+        //Karsiki clienta dosyayi gonderir
+        Thread.sleep(100);
+        String[] parts = msg.content.toString().split("&");
+        String kisi = parts[0];
+        String fileName_Content = parts[1];
+        msg.content = fileName_Content;
+
+        for (SClient c : Clients) {
+            if (c.name.equals(kisi)) {
+                Server.Send(c, msg);
+            }
+        }
+    }
+
+    public static SClient ClientBul(String s) {
 
         for (SClient c : Clients) {
             if (c.name.equals(s)) {
@@ -162,19 +197,17 @@ public class Server {
         return null;
     }
 
-    public static void Baglandi(Message msg) throws InterruptedException {
-
-        Thread.sleep(500);
+    public static void BaglantiKur(Message msg) throws InterruptedException {
+        //Her yeni baglanan kullaniciyi cevrimici kullanicilar listesine ekler 
+        //Bunu tüm clientlara yollar
+        Thread.sleep(200);
         if (Server.Clients.size() > 0) {
-
             DefaultListModel userList = new DefaultListModel();
-
             for (SClient client : Clients) {
                 userList.addElement(client.name);
-
             }
 
-            Message msg2 = new Message(Message.Message_Type.newUser);
+            Message msg2 = new Message(Message.Message_Type.Connected);
             msg2.content = userList;
 
             for (SClient c : Clients) {
@@ -183,16 +216,13 @@ public class Server {
         }
     }
 
-    public static void Baglandi2(Message msg) throws InterruptedException {
-
-        Thread.sleep(500);
+    public static void BaglantiKur2(Message msg) throws InterruptedException {
+        //Grup kurmak isteyen clienta tüm çevrimiçi kullanicilarin listesini yollar
+        Thread.sleep(100);
         if (Server.Clients.size() > 0) {
-
             DefaultListModel userList = new DefaultListModel();
-
             for (SClient client : Clients) {
                 userList.addElement(client.name);
-
             }
 
             Message msg2 = new Message(Message.Message_Type.grupUsers);
@@ -204,7 +234,6 @@ public class Server {
                     break;
                 }
             }
-
         }
     }
 }

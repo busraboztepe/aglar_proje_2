@@ -9,10 +9,10 @@ import message.Message;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import static java.lang.Thread.sleep;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static server.Server.Clients;
 
 /**
  *
@@ -27,17 +27,8 @@ public class SClient {
     ObjectInputStream sInput;
     //clientten gelenleri dinleme threadi
     Listen listenThread;
-    //rakip client
-    public SClient rival;
-
-    PairingThread pairThread;
-
-    public String geriKalan;
-
-    public boolean threadDurum = false;
-    //rakip client
-    //eşleşme durumu
-    public boolean paired = false;
+    //karsilikli mesajlasma icin eslestirme ve mesaj alisverisi threadi
+    PairingThread2 pairThread;
 
     public SClient(Socket gelenSoket, int id) {
         this.soket = gelenSoket;
@@ -50,7 +41,6 @@ public class SClient {
         }
         //thread nesneleri
         this.listenThread = new Listen(this);
-        this.pairThread = new PairingThread(this);
     }
 
     //client mesaj gönderme
@@ -67,6 +57,7 @@ public class SClient {
     class Listen extends Thread {
 
         SClient TheClient;
+        Message msg;
 
         //thread nesne alması için yapıcı metod
         Listen(SClient TheClient) {
@@ -83,94 +74,60 @@ public class SClient {
                     //mesaj tipine göre işlemlere ayır
                     switch (received.type) {
                         case Name:
+                            //kisinin isim bilgisini aldıktan sonra baglanti kurar
                             TheClient.name = received.content.toString();
                             Thread.sleep(500);
                             Server.Send(TheClient, received);
                             Thread.sleep(500);
-                            Server.Baglandi(received);
+                            Server.BaglantiKur(received);
                             break;
 
                         case kisiBul:
-                            String kisi;
-
-                            String[] parts = received.content.toString().split("-");
-                            kisi = parts[0];
-                            geriKalan = parts[1];
-                            if (!TheClient.paired) {
-                                Thread.sleep(300);
-                                rival = Server.ClientBul(kisi, geriKalan);
-                                Thread.sleep(300);
-                                TheClient.rival = rival;
-                                System.out.println("client : " + TheClient.name);
-                                System.out.println("rival: " + TheClient.rival.name);
-                                rival.rival = TheClient;
-                                TheClient.paired = true;
-
-                                // isim verisini gönderdikten sonra eşleştirme işlemine başla
-                                Thread.sleep(1000);
-                                System.out.println("theclient naber : " + TheClient.name);
-                                Thread.sleep(300);
-                                TheClient.pairThread = new SClient.PairingThread(TheClient);
-                                pairThread.start();
-
-                            }
-
+                            //karsilikli mesajlasilirken karsiki kisiyle konusmak icin thread baslatir
+                            TheClient.pairThread = new SClient.PairingThread2(received);
+                            pairThread.start();
                             break;
 
-                          case  grupKisiBul:
-                              Server.CreateGrup(received);
-                              
-                              break;
-                          
-                            
-                        case Text:
-                            //gelen metni direkt rakibe gönder
-                            //Server.Send(TheClient.rival, received);
-                            
+                        case grupKisiBul:
+                            //Secili kisilerle grup olusturur
+                            Server.CreateGrup(received);
                             break;
 
                         case icerik2:
-                            Server.Send(TheClient.rival, received);
+                            //karsi clienta mesaji iletir
+                            Server.KarsiyaGonder(received);
                             break;
 
                         case baglantiKopar:
-                            Server.Send(rival, received);
+                            //Clientlardan biri konusmadan ciktiktan sonra karsiki clienta bunun bilgisi gider 
+                            //konusma sonlanir
+                            SClient c = Server.ClientBul(received.content.toString());
+                            Server.Send(c, received);
                             Thread.sleep(100);
-                            TheClient.paired = false;
-                            TheClient.pairThread.stop();
-
                             break;
 
                         case baglantiKopar2:
+                            //clientlardan biri konusmadan cikinca o konusmayi takip eden threadi durdurur
                             Thread.sleep(100);
-                            TheClient.paired = false;
                             TheClient.pairThread.stop();
                             break;
-                            
+
                         case grupUsers:
-                            Server.Baglandi2(received);
+                            //grup olusturmak icin online kullanicilar bilgisini tasir
+                            Server.BaglantiKur2(received);
                             Thread.sleep(100);
                             break;
-                            
-                            
-                        case icerikGrup:
-                            Server.tumUyelereGonder(received);
-                            
-                            break;
-                            
-                            
-                        case dosya1:
-                            
-                            System.out.println(received.content);
-                            System.out.println(received.content.toString());
-                            
-                            Server.dosyaGonder(received);
-                            
-                            break;
-                            
-                            
-                    }
 
+                        case icerikGrup:
+                            //gruptaki tum uyelere mesaji iletir
+                            Server.tumUyelereGonder(received);
+                            break;
+
+                        case dosya1:
+                            //gruptaki kullanicilara dosyayi gonderir
+                            Server.dosyaGonder(received);
+                            break;
+                    }
                 } catch (IOException ex) {
                     Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (ClassNotFoundException ex) {
@@ -182,72 +139,33 @@ public class SClient {
         }
     }
 
-    //eşleştirme threadi
-    //her clientin ayrı bir eşleştirme threadi var
-    class PairingThread extends Thread {
+    class PairingThread2 extends Thread {
 
-        SClient TheClient;
+        //karsilikli mesajlasmayi saglamak icin baslatilan thread
+        //her mesajlasma icin bir thread
+        Message msg;
 
-        PairingThread(SClient TheClient) {
-            this.TheClient = TheClient;
+        PairingThread2(Message msg) {
+            this.msg = msg;
         }
 
         public void run() {
-            //client bağlı ve eşleşmemiş olduğu durumda dön
-            while (TheClient.soket.isConnected() && TheClient.paired == true) {
+            String[] parts = msg.content.toString().split("-");
+            String kisi_adi = parts[0];
+            String geri_kalan = parts[1];
+            msg.content = geri_kalan;
 
-                if (!TheClient.rival.paired) {
-                    try {
-                        Thread.sleep(300);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    TheClient.rival.paired = true;
-                    Message msg2 = new Message(Message.Message_Type.icerik);
-                    msg2.content = geriKalan;
-                    Server.Send(rival, msg2);
+            //secili kisiye yeni jframe olusturmak icin
+            for (SClient c : Clients) {
+                if (c.name.equals(kisi_adi)) {
+                    Server.Send(c, msg);
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException ex) {
                         Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    Message msg3 = new Message(Message.Message_Type.durum);
-                    msg3.content = true;
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    Server.Send(rival, msg3);
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    Server.Send(TheClient, msg3);
-
                 }
-
-                Message msg = new Message(Message.Message_Type.icerik2);
-                msg.content = geriKalan;
-                Server.Send(TheClient.rival, msg);
-
-                try {
-                    //sürekli dönmesin 1 saniyede bir dönsün
-                    //threadi uyutuyoruz
-                    Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                break;
-
             }
-
-            //lock mekanizmasını serbest bırak
-            //bırakılmazsa deadlock olur.
         }
-
     }
-
 }
