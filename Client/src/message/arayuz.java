@@ -93,7 +93,8 @@ public class arayuz extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             //bağlanılacak server ve portu veriyoruz
-            Client.Start("127.0.0.1", 7000);
+            //Client.Start("127.0.0.1", 7000);
+            Client.Start("18.117.114.61", 7000);
             //arayuzu kapatip anasayfaya baglaniyoruz
             ThisArayuz.dispose();
             new anasayfa(txt_name.getText().toString()).setVisible(true);
